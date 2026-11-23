@@ -1,0 +1,38 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+
+# Dev harness / HA runtime
+dev/config/.storage/
+dev/config/home-assistant.log*
+dev/config/*.db
+dev/config/*.db-*
+dev/config/.cloud/
+dev/config/deps/
+dev/config/tts/
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Build artefacts
+dist/
+build/
