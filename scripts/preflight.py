@@ -223,6 +223,19 @@ def check_env_safety() -> None:
     )
     record(".env not tracked", tracked.returncode != 0, "the .env file is tracked by git")
 
+    history = subprocess.run(
+        ["git", "log", "--all", "--format=%H", "--", ".env"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    record(
+        ".env never committed",
+        not history.stdout.strip(),
+        "the .env file appears in git history",
+    )
+
 
 def check_hacs() -> None:
     data = read_json(ROOT / "hacs.json")

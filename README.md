@@ -27,7 +27,7 @@ Screenshots are added with the `v0.1.0` release.
 
 1. Go to **Settings → Marketplace**.
 2. Open the menu in the top-right corner and choose **Add from link**.
-3. Enter `github.com/etanyxyz/Home-Assistant-Arr-Integration`.
+3. Enter `github.com/etanyxyz/Arr-Studio`.
 4. Install **Arr Studio**, then restart Home Assistant.
 
 Connecting a GitHub account in the Marketplace is required the first time you add a
@@ -36,7 +36,7 @@ custom repository.
 ### HACS (Home Assistant 2026.10 and older)
 
 1. Open **HACS → Integrations → three-dot menu → Custom repositories**.
-2. Add `https://github.com/etanyxyz/Home-Assistant-Arr-Integration` as type **Integration**.
+2. Add `https://github.com/etanyxyz/Arr-Studio` as type **Integration**.
 3. Install **Arr Studio** and restart Home Assistant.
 
 ### Manual
@@ -77,7 +77,7 @@ The `arr_studio.refresh` action refreshes all servers (or pass an `entry_id` for
 ## Requirements
 
 - Home Assistant **2025.6** or newer
-- Sonarr **v4** or Radarr **v5+**, reachable from Home Assistant
+- Sonarr **v4** (live-tested 4.0.20) or Radarr **v5+** (live-tested 7.0.3), reachable from Home Assistant
 - An Arr API key
 
 ## Development

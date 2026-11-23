@@ -1,7 +1,7 @@
 # Arr Studio — Home Assistant integration for Sonarr & Radarr
 
 **Status:** implementation plan v1.0
-**Target repo:** https://github.com/etanyxyz/Home-Assistant-Arr-Integration (`main`)
+**Target repo:** https://github.com/etanyxyz/Arr-Studio (`main`)
 **Integration domain:** `arr_studio`
 **Target HA:** 2026.11.x (dev instance confirmed at 2026.11.2); minimum supported `2025.6.0`
 **Author of plan:** build agent; **implementer:** local `ling-3.0-tiny` model
@@ -28,8 +28,8 @@ Clone/push helper (run once):
 
 ```bash
 export GIT_SSH_COMMAND="ssh -i /mnt/docker/Projects/github -o IdentitiesOnly=yes"
-git clone git@github.com:etanyxyz/Home-Assistant-Arr-Integration.git
-cd Home-Assistant-Arr-Integration
+git clone git@github.com:etanyxyz/Arr-Studio.git
+cd Arr-Studio
 ```
 
 **Live credentials:** the human keeps real Sonarr/Radarr URLs and API keys in `.env` in the
@@ -70,7 +70,7 @@ Plex/Emby/Jellyfin integration, multi-user permissions, Lovelace dashboard strat
 | Area | Deliverable |
 |---|---|
 | Config | UI config flow per Arr server, reauth, options flow |
-| Data | Sonarr v4 + Radarr v5/v6 via `/api/v3`, 30 s activity poll, 10 min library cache |
+| Data | Sonarr v4 + Radarr v5–v7 via `/api/v3` (live-verified: Sonarr 4.0.20.3014, Radarr 7.0.3.10918), 30 s activity poll, 10 min library cache |
 | Entities | 8 sensors, 1 binary_sensor, 1 image, 1 button per configured server |
 | UI | Sidebar panel `arr-studio`, glass/cinematic design, poster grid, queue, activity, filters, detail drawer |
 | Media | Poster/fanart proxy with auth + caching; gradient placeholder fallback |
@@ -99,6 +99,7 @@ Plex/Emby/Jellyfin integration, multi-user permissions, Lovelace dashboard strat
 | D7 | **No custom JS framework; `el()` DOM builder + Shadow DOM** | No build step, XSS-safe by construction, ~150-line modules the model can generate reliably. |
 | D8 | **`integration_type: service`, `iot_class: local_polling`** | Correct semantics for a local server integration. |
 | D9 | **Real credentials live in a git-ignored `.env`, never in the repo or the integration** | Enables validation against the human's live Sonarr/Radarr without leaking keys; `.env.example` documents the keys; preflight verifies `.env` is ignored and untracked. |
+| D10 | **Covers are lazy-loaded and cached** (`IntersectionObserver`, blob URL cache, `Cache-Control: private, max-age=3600`) | Live posters are 0.4–1.3 MB each; eager loading a 24-poster grid would stall the panel. |
 
 ---
 
@@ -176,6 +177,42 @@ totalEpisodeCount, sizeOnDisk, percentOfEpisodes}`, `nextAiring`.
 - `status` strings differ between apps. Treat any value not in our known set as `unknown`.
 - Timestamps are ISO-8601 with `Z`; parse with `datetime.fromisoformat(v.replace("Z", "+00:00"))`.
 
+### 4.4 Live verification (2026-11-23, real servers)
+
+`scripts/live_smoke.py` ran successfully against both servers:
+
+| | Sonarr | Radarr |
+|---|---|---|
+| Version | 4.0.20.3014 | 7.0.3.10918 |
+| Transport | HTTP, no TLS | HTTP, no TLS |
+| Library | 15 series | 3 movies |
+| Queue at test time | 0 records | 0 records |
+| Health | 1 warning | 3 issues (1 error, 2 warnings) |
+| History (latest page) | 1439 total; `downloadFolderImported` | 4 total; `downloadFolderImported`, `grabbed` |
+| Poster route | `200 image/jpeg`, 409 KB | `200 image/jpeg`, 1.3 MB |
+| Calendar (14 days) | 0 | 0 |
+
+Consequences for the implementation:
+
+1. **Posters are large** (up to ~1.3 MB each). Covers MUST be lazy-loaded with
+   `IntersectionObserver` (`rootMargin: "200px"`) and cached as blob object URLs (max 200); never
+   fetch the whole grid eagerly. The cover response sets `Cache-Control: private, max-age=3600`.
+2. **`/queue` was empty**, so queue field names are proven by the repository fixtures and the
+   controller source, not by this run. Keep `tests/fixtures/*_queue.json` realistic and keep the
+   tolerant `.get()` normalisation.
+3. **`/diskspace` reports the filesystem the Arr process sees** (Sonarr reported `/`, 105 GB, not
+   the host array). Label the sensor "Disk free" with the reported `path` attribute; do not claim it
+   is the host's media pool.
+4. **`/calendar` can legitimately return 0 items.** The Upcoming UI needs a real empty state, and
+   `counts["upcoming"]` must be 0, not an error.
+5. **History may contain only import events on some servers.** Activity UI must render any unknown
+   `eventType` as a humanised fallback ("Grabbed", "Imported", "Failed", else the raw string
+   with underscores replaced).
+6. **`coverType` values in the wild:** `poster`, `fanart`, `banner`, `clearlogo`. Only `poster` and
+   `fanart` are used; treat missing art as a normal condition.
+7. Radarr 7 still serves `/api/v3`; the `includeMovie=true` queue parameter was accepted. No
+   version branching is needed.
+
 ---
 
 ## 5. Architecture
@@ -213,7 +250,7 @@ Cover 404 → 404 to browser → panel renders gradient placeholder.
 ## 6. Repository layout
 
 ```
-Home-Assistant-Arr-Integration/
+Arr-Studio/
 ├─ .github/workflows/validate.yml
 ├─ .gitignore                   (ignores .env and .env.local; keeps .env.example)
 ├─ .env.example                 (placeholders for SONARR_/RADARR_ URL + API key)
@@ -445,10 +482,10 @@ Optional: short GIF/MP4 of the panel (`docs/images/demo.gif`, < 8 MB).
   "codeowners": ["@etanyxyz"],
   "config_flow": true,
   "dependencies": ["http", "frontend"],
-  "documentation": "https://github.com/etanyxyz/Home-Assistant-Arr-Integration",
+  "documentation": "https://github.com/etanyxyz/Arr-Studio",
   "integration_type": "service",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/etanyxyz/Home-Assistant-Arr-Integration/issues",
+  "issue_tracker": "https://github.com/etanyxyz/Arr-Studio/issues",
   "loggers": ["custom_components.arr_studio"],
   "requirements": [],
   "version": "0.1.0"
@@ -966,7 +1003,8 @@ Walk `custom_components/arr_studio/frontend/**/*.js`:
 `api.js`
 ```js
 export async function fetchOverview(hass)            // GET OVERVIEW_URL, no-store, returns object
-export async function getCoverObjectUrl(hass, path)   // blobs, Map cache, returns url | null
+export async function getCoverObjectUrl(hass, path)   // blobs, Map cache (max 200), returns url | null
+export function lazyCover(hass, imgEl, path)          // IntersectionObserver -> getCoverObjectUrl
 export function releaseCovers()                       // revoke all object URLs
 ```
 Rules: `hass.fetchWithAuth(path, {cache: "no-store"})`; on non-OK throw `Error(status)`;
@@ -1112,6 +1150,9 @@ refresh toast `role="status" aria-live="polite"`; images `alt=""` (decorative, t
   the user picks `sort=title`.
 - Cover loading: create `<img>` with the placeholder as `src` first, then swap to the blob URL when
   ready; on error keep placeholder (no broken-image icon).
+- **Lazy covers:** only fetch a cover when its tile is within 200 px of the viewport
+  (`IntersectionObserver`, one observer per render, disconnected on re-render). Live posters are up to
+  1.3 MB, so eager loading is not acceptable. Cache blob URLs (max 200) and reuse them across tabs.
 - Polling: 30 s; skip when `document.hidden`; immediate reload on `visibilitychange` → visible.
 - Manual refresh: calls `hass.callService("arr_studio", "refresh", {})`, shows spinner for ≤ 3 s, then reloads.
 - Search: client-side filter on `title` + `subtitle`, case-insensitive, debounce 150 ms.
@@ -1228,6 +1269,10 @@ See §13. Required passes before tagging:
    Activity.
 5. Delete the entry → entities removed, panel removed after the last entry.
 6. `curl` overview unauthenticated → 401; authenticated → valid JSON with no key.
+7. `python3 scripts/live_smoke.py` passes against the human's real servers (verified 2026-11-23:
+   Sonarr 4.0.20.3014 and Radarr 7.0.3.10918, both HTTP on the LAN). Re-run it after any change to
+   `api.py` or `normalize.py`; the queue was empty on that date, so also watch for a real download to
+   confirm queue fields end-to-end.
 
 ---
 
@@ -1282,7 +1327,21 @@ RADARR_API_KEY=...
 ```
 
 `scripts/live_smoke.py` (stdlib only) reads `.env`, then for each configured server verifies and
-prints without ever echoing the key:
+prints without ever echoing the key. It accepts both the documented `KEY=VALUE` form and a plain
+notes form:
+
+```
+Radarr:
+url=http://192.168.1.10:7878
+API key=...
+
+Sonarr:
+url=http://192.168.1.10:8989
+API key=...
+```
+
+`url`/`host` and `api key`/`api_key`/`apikey` are matched case-insensitively inside a
+`Sonarr`/`Radarr` section. Displayed URLs have credentials and query strings stripped.
 
 1. `GET /api/v3/system/status` — appName/version/instanceName, and that appName matches the kind.
 2. `GET /api/v3/health` — issue count and types.
@@ -1308,7 +1367,7 @@ record it in `docs/TESTING.md` and adapt `normalize.py` — do not guess.
 
 ## 14. Acceptance criteria (definition of done)
 
-- [ ] Marketplace (2026.11+) install from a custom repo: `github.com/etanyxyz/Home-Assistant-Arr-Integration` succeeds, panel appears after restart, no manual YAML.
+- [ ] Marketplace (2026.11+) install from a custom repo: `github.com/etanyxyz/Arr-Studio` succeeds, panel appears after restart, no manual YAML.
 - [ ] Both Sonarr and Radarr entries can coexist; all 20 entities exist, unique IDs stable across reloads.
 - [ ] Panel: hero, stat pills, poster grid, downloads, activity, filters, sort, search, detail drawer all work; newest items first; covers visible.
 - [ ] Any configured server offline → online sensor off, panel shows per-server error, other server unaffected.

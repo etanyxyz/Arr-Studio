@@ -11,5 +11,5 @@ missing items, disk space and server health.
 - Thumbnails are proxied through Home Assistant — API keys never reach the browser
 - No cloud services and no extra Python requirements
 
-See the [README](https://github.com/etanyxyz/Home-Assistant-Arr-Integration#readme) for
+See the [README](https://github.com/etanyxyz/Arr-Studio#readme) for
 installation and configuration.

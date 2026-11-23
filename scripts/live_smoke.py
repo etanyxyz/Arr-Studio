@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import ssl
 import sys
 import urllib.error
@@ -39,20 +40,58 @@ OK = "  ok   "
 BAD = "  FAIL "
 
 
+SECTION_ALIASES = {"sonarr": "SONARR", "radarr": "RADARR"}
+SECTION_RE = re.compile(r"^\[?([A-Za-z][A-Za-z ]*?)\]?:$")
+URL_KEYS = {"url", "host", "hostname", "base_url", "base url", "address"}
+KEY_KEYS = {"api key", "api_key", "api-key", "apikey", "key", "token"}
+
+
 def read_env(path: Path) -> dict[str, str]:
-    """Parse a minimal KEY=VALUE .env file."""
+    """Parse a .env file.
+
+    Accepts both the documented ``KEY=VALUE`` form and a plain notes form with
+    sections:
+
+        Radarr:
+        url=http://192.168.1.10:7878
+        API key=...
+
+        Sonarr:
+        url=http://192.168.1.10:8989
+        API key=...
+    """
     values: dict[str, str] = {}
     if not path.is_file():
         return values
+    section: str | None = None
+
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in line:
+        if not line or line.startswith("#"):
+            continue
+
+        header = SECTION_RE.match(line)
+        if header:
+            section = SECTION_ALIASES.get(header.group(1).strip().lower())
+            continue
+
+        if "=" not in line:
             continue
         key, _, value = line.partition("=")
+        key = key.strip().lower()
         value = value.strip()
         if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
-            value = value[1:-1]
-        values[key.strip()] = value
+            value = value[1:-1].strip()
+        if not value:
+            continue
+
+        if section and key in URL_KEYS:
+            values[f"{section}_URL"] = value
+        elif section and key in KEY_KEYS:
+            values[f"{section}_API_KEY"] = value
+        else:
+            values[re.sub(r"[^A-Za-z0-9]+", "_", key).upper()] = value
+
     return values
 
 
@@ -65,6 +104,15 @@ def normalize_base_url(value: str) -> str:
         if url.endswith(suffix):
             url = url[: -len(suffix)]
     return url.rstrip("/")
+
+
+def safe_url(value: str) -> str:
+    """Return a display URL with credentials and query stripped."""
+    parsed = urllib.parse.urlsplit(normalize_base_url(value))
+    host = parsed.hostname or "unknown"
+    port = f":{parsed.port}" if parsed.port else ""
+    path = parsed.path.rstrip("/")
+    return f"{parsed.scheme}://{host}{port}{path}"
 
 
 class Client:
@@ -111,7 +159,7 @@ def describe_item(kind: str, item: dict) -> str:
 
 def check_server(label: str, kind: str, base_url: str, api_key: str, insecure: bool) -> bool:
     """Run the validation checks for one server. Returns True when it is healthy."""
-    print(f"\n{label} — {normalize_base_url(base_url)}")
+    print(f"\n{label} — {safe_url(base_url)}")
     client = Client(base_url, api_key, insecure)
     failures = 0
 
