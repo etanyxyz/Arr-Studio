@@ -17,7 +17,17 @@ sidebar panel and native entities you can automate on.
 
 ## Screenshots
 
-Screenshots are added with the `v0.1.0` release.
+| Overview | Downloads |
+| --- | --- |
+| <img src="docs/images/panel-overview.png" width="720" alt="Arr Studio panel, overview tab"> | <img src="docs/images/panel-downloads.png" width="720" alt="Arr Studio panel, downloads tab"> |
+
+| Detail drawer | Mobile (390×844) |
+| --- | --- |
+| <img src="docs/images/panel-detail.png" width="720" alt="Arr Studio panel, detail drawer"> | <img src="docs/images/mobile-overview.png" width="195" alt="Arr Studio panel on mobile"> |
+
+Native entities for a configured server:
+
+![Entities](docs/images/entities.png)
 
 ## Installation
 
@@ -77,6 +87,29 @@ The `arr_studio.refresh` action refreshes all servers (or pass an `entry_id` for
 - Home Assistant **2025.6** or newer
 - Sonarr **v4** (live-tested 4.0.20) or Radarr **v5+** (live-tested 7.0.3), reachable from Home Assistant
 - An Arr API key
+
+## Troubleshooting
+
+**The panel is missing from the sidebar.** Configure at least one server first, then restart
+Home Assistant. The panel appears as soon as the first server is set up.
+
+**A server chip shows offline or an error.** Check that the URL is the server root only
+(`http://192.168.1.10:8989`) with no trailing slash and no `/api/v3` suffix, and that the
+server is reachable from Home Assistant. The error chip shows the failing endpoint, e.g.
+`Connection to sonarr failed at /health`.
+
+**Authentication failed (401).** A reauth flow opens automatically in the notifications panel.
+Re-enter the API key (the URL is kept from the existing configuration) and the entry reloads
+without a restart. If you keep the same key, enter it again as-is.
+
+**Data sensors go unavailable while a server is down.** By design: `binary_sensor.*_online` is
+the signal, and the data entities recover automatically once the server responds again. Other
+servers keep working while one is offline.
+
+**`disk_free` shows `unknown`.** The server did not report usable disk space.
+
+**Posters do not load.** Poster artwork is proxied through the Arr server itself, so the server
+must be reachable from Home Assistant.
 
 ## Development
 
