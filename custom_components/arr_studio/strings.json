@@ -9,12 +9,6 @@
           "url": "Server URL",
           "api_key": "API key",
           "verify_ssl": "Verify SSL certificate"
-        },
-        "errors": {
-          "cannot_connect": "Cannot connect to the server.",
-          "invalid_auth": "Authentication failed. Check the API key.",
-          "wrong_server": "The server is not a matching Sonarr or Radarr instance.",
-          "invalid_input": "Please provide a server URL and an API key."
         }
       },
       "reauth_confirm": {
@@ -22,15 +16,14 @@
         "description": "The API key stopped working. Enter a new API key.",
         "data": {
           "api_key": "API key"
-        },
-        "errors": {
-          "cannot_connect": "Cannot connect to the server.",
-          "invalid_auth": "Authentication failed. Check the API key.",
-          "invalid_input": "Please provide an API key."
         }
       }
     },
     "error": {
+      "cannot_connect": "Cannot connect to the server.",
+      "invalid_auth": "Authentication failed. Check the API key.",
+      "wrong_server": "The server is not a matching Sonarr or Radarr instance.",
+      "invalid_input": "Please provide a server URL and an API key.",
       "unknown": "Unexpected error."
     },
     "abort": {
