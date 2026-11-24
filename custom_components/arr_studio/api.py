@@ -73,6 +73,16 @@ class ArrClient:
         self._verify_ssl = verify_ssl
         self._session: aiohttp.ClientSession | None = None
 
+    @property
+    def kind(self) -> str:
+        """Server kind ('sonarr' or 'radarr')."""
+        return self._kind
+
+    @property
+    def base_url(self) -> str:
+        """Normalized base URL of the server."""
+        return self._base_url
+
     # -----------------------------------------------------------------------
     # Session / headers
     # -----------------------------------------------------------------------

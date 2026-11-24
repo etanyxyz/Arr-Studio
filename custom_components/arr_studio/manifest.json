@@ -1,0 +1,14 @@
+{
+  "domain": "arr_studio",
+  "name": "Arr Studio",
+  "codeowners": ["@etanyxyz"],
+  "config_flow": true,
+  "dependencies": ["http", "frontend"],
+  "documentation": "https://github.com/etanyxyz/Arr-Studio",
+  "integration_type": "service",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/etanyxyz/Arr-Studio/issues",
+  "loggers": ["custom_components.arr_studio"],
+  "requirements": [],
+  "version": "0.1.0"
+}
