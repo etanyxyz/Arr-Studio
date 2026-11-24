@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "date": "2026-11-23T15:12:00Z",
+    "eventType": "downloadFolderImported",
+    "sourceTitle": "Severance.S02E04.1080p.WEB-DL",
+    "quality": {
+      "quality": {
+        "name": "WEBDL-1080p"
+      }
+    },
+    "data": {},
+    "series": {
+      "id": 34,
+      "title": "Severance",
+      "titleSlug": "severance",
+      "year": 2022,
+      "images": []
+    },
+    "episode": {
+      "seasonNumber": 2,
+      "episodeNumber": 4,
+      "title": "Woe's Hollow"
+    }
+  },
+  {
+    "id": 2,
+    "date": "2026-11-23T14:30:00Z",
+    "eventType": "downloadFolderImported",
+    "sourceTitle": "Severance.S02E03.1080p.WEB-DL",
+    "quality": {
+      "quality": {
+        "name": "WEBDL-1080p"
+      }
+    },
+    "data": {},
+    "series": {
+      "id": 34,
+      "title": "Severance",
+      "titleSlug": "severance",
+      "year": 2022,
+      "images": []
+    },
+    "episode": {
+      "seasonNumber": 2,
+      "episodeNumber": 3,
+      "title": "Cold Harbor"
+    }
+  }
+]

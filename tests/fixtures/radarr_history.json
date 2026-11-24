@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "date": "2026-11-23T15:12:00Z",
+    "eventType": "downloadFolderImported",
+    "sourceTitle": "The Last Frontier",
+    "quality": {
+      "quality": {
+        "name": "WEBDL-1080p"
+      }
+    },
+    "data": {},
+    "series": {},
+    "episode": {}
+  },
+  {
+    "id": 2,
+    "date": "2026-11-23T14:30:00Z",
+    "eventType": "downloadFolderImported",
+    "sourceTitle": "The Last Frontier",
+    "quality": {
+      "quality": {
+        "name": "WEBDL-1080p"
+      }
+    },
+    "data": {},
+    "series": {},
+    "episode": {}
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 101,
+    "movieId": 1,
+    "movie": {
+      "id": 1,
+      "title": "The Last Frontier",
+      "titleSlug": "the-last-frontier",
+      "year": 2024,
+      "runtime": 120,
+      "genres": ["Action", "Sci-Fi"],
+      "studio": "Dark Picture",
+      "overview": "A team of explorers discovers a new dimension.",
+      "hasFile": true,
+      "sizeOnDisk": 1234567890,
+      "status": "normal"
+    },
+    "movieFile": {
+      "quality": {
+        "name": "WEBDL-1080p"
+      }
+    },
+    "size": 1825361100,
+    "sizeleft": 1056964608,
+    "timeleft": "00:05:12",
+    "estimatedCompletionTime": "2026-11-23T16:05:12Z",
+    "added": "2026-11-23T15:40:00Z",
+    "status": "downloading",
+    "protocol": "torrent",
+    "downloadClient": "qBittorrent",
+    "quality": {
+      "quality": {
+        "name": "WEBDL-1080p"
+      }
+    },
+    "errorMessage": null
+  }
+]

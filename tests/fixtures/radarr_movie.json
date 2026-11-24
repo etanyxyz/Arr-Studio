@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "The Last Frontier",
+    "titleSlug": "the-last-frontier",
+    "year": 2024,
+    "added": "2026-11-20T10:00:00Z",
+    "monitored": true,
+    "hasFile": true,
+    "sizeOnDisk": 1234567890,
+    "status": "normal",
+    "runtime": 120,
+    "genres": ["Action", "Sci-Fi"],
+    "studio": "Dark Picture",
+    "overview": "A team of explorers discovers a new dimension.",
+    "images": [
+      {
+        "coverType": "poster",
+        "url": "/api/arr_studio/cover/1/radarr/1/poster",
+        "remoteUrl": "https://image.tmdb.org/..."
+      }
+    ],
+    "movieFile": {
+      "quality": {
+        "name": "WEBDL-1080p"
+      }
+    }
+  }
+]

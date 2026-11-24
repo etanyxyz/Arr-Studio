@@ -1,0 +1,32 @@
+[
+  {
+    "id": 34,
+    "title": "Severance",
+    "titleSlug": "severance",
+    "year": 2022,
+    "added": "2026-11-23T15:40:00Z",
+    "monitored": true,
+    "hasFile": true,
+    "sizeOnDisk": 4823449600,
+    "status": "normal",
+    "network": "Apple TV+",
+    "genres": ["Sci-Fi", "Drama", "Thriller"],
+    "overview": "Mark leads a team that hunts down criminals who keep dying in the line of duty.",
+    "images": [
+      {
+        "coverType": "poster",
+        "url": "/api/arr_studio/cover/34/sonarr/34/poster",
+        "remoteUrl": "https://image.tmdb.org/..."
+      }
+    ],
+    "statistics": {
+      "episodeCount": 8,
+      "episodeFileCount": 1,
+      "totalEpisodeCount": 8,
+      "sizeOnDisk": 4823449600,
+      "percentOfEpisodes": 100
+    },
+    "nextAiring": "2026-11-23T00:00:00Z",
+    "webUrl": "http://192.168.1.10:8989/series/severance"
+  }
+]

@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1201,
+    "seriesId": 34,
+    "episodeId": 9001,
+    "seasonNumber": 2,
+    "title": "Severance.S02E04.1080p.WEB-DL",
+    "status": "downloading",
+    "trackedDownloadState": "downloading",
+    "trackedDownloadStatus": "ok",
+    "size": 1825361100,
+    "sizeleft": 1056964608,
+    "timeleft": "00:05:12",
+    "estimatedCompletionTime": "2026-11-23T16:05:12Z",
+    "added": "2026-11-23T15:40:00Z",
+    "protocol": "torrent",
+    "downloadClient": "qBittorrent",
+    "indexer": "TorrentLeech",
+    "quality": {
+      "quality": {
+        "id": 3,
+        "name": "WEBDL-1080p"
+      }
+    },
+    "errorMessage": null,
+    "series": {
+      "id": 34,
+      "title": "Severance",
+      "titleSlug": "severance",
+      "year": 2022,
+      "images": []
+    },
+    "episode": {
+      "seasonNumber": 2,
+      "episodeNumber": 4,
+      "title": "Woe's Hollow"
+    }
+  }
+]
