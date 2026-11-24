@@ -17,8 +17,8 @@ class ArrEntity(CoordinatorEntity[ArrCoordinator]):
     _attr_has_entity_name = True
 
     def __init__(self, coordinator: ArrCoordinator, key: str) -> None:
-        """Store the coordinator and entity key; unique id is {entry_id}_{key}."""
-        self.coordinator = coordinator
+        """Initialize via CoordinatorEntity; unique id is {entry_id}_{key}."""
+        super().__init__(coordinator)
         self._key = key
         entry = coordinator.config_entry
         self._attr_unique_id = f"{entry.entry_id}_{key}"
