@@ -285,3 +285,43 @@ class TestArrClient:
         client._session.get = AsyncMock(return_value=resp)
         with pytest.raises(ArrResponseError):
             await client.async_get_status()
+
+    async def test_async_session_sync_helper(self):
+        """_async_session accepts a sync helper (new HA returns the session directly)."""
+        from unittest import mock
+
+        client = ArrClient(
+            hass=MagicMock(),
+            base_url="http://test.local",
+            api_key="test-key",
+            kind="sonarr",
+            verify_ssl=True,
+        )
+        fake_session = MagicMock(name="fake-session")
+        with mock.patch(
+            "homeassistant.helpers.aiohttp_client.async_get_clientsession",
+            return_value=fake_session,
+        ):
+            session = await client._async_session()
+        assert session is fake_session
+        assert client._session is fake_session
+
+    async def test_async_session_awaitable_helper(self):
+        """_async_session accepts an awaitable helper (older HA returned a coroutine)."""
+        from unittest import mock
+
+        client = ArrClient(
+            hass=MagicMock(),
+            base_url="http://test.local",
+            api_key="test-key",
+            kind="sonarr",
+            verify_ssl=True,
+        )
+        fake_session = MagicMock(name="fake-session")
+        with mock.patch(
+            "homeassistant.helpers.aiohttp_client.async_get_clientsession",
+            new=AsyncMock(return_value=fake_session),
+        ):
+            session = await client._async_session()
+        assert session is fake_session
+        assert client._session is fake_session

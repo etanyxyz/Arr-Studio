@@ -88,11 +88,19 @@ class ArrClient:
     # -----------------------------------------------------------------------
 
     async def _async_session(self) -> aiohttp.ClientSession:
-        """Lazily obtain the HA-managed session (HA import kept out of module top)."""
+        """Lazily obtain the HA-managed session (HA import kept out of module top).
+
+        ``async_get_clientsession`` is a coroutine on older HA releases and a
+        plain (sync) function returning the cached session on newer ones;
+        handle both so the integration works across versions.
+        """
         if self._session is None:
             from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-            self._session = await async_get_clientsession(self._hass, verify_ssl=self._verify_ssl)
+            session = async_get_clientsession(self._hass, verify_ssl=self._verify_ssl)
+            if inspect.isawaitable(session):
+                session = await session
+            self._session = session
         return self._session
 
     def _headers(self) -> dict[str, str]:
