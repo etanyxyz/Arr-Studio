@@ -2,8 +2,6 @@
 
 **Sonarr & Radarr, beautifully integrated into Home Assistant.**
 
-> **Status:** under active development — `v0.1.0` is not released yet.
-
 Arr Studio brings your Sonarr and Radarr libraries into Home Assistant with a cinematic
 sidebar panel and native entities you can automate on.
 

@@ -1,0 +1,25 @@
+# Arr Studio example automation: notify when downloads finish.
+#
+# Entity IDs follow the pattern sensor.<title>_<key>, where <title> is the
+# title of your configured server entry. Replace sensor.sonarr_downloading
+# and sensor.sonarr_queue with your own entry's entities
+# (for example sensor.my_sonarr_downloading).
+
+alias: "Arr Studio: downloads complete"
+description: "Notify when the download count drops to zero and the queue is empty."
+triggers:
+  - type: changed
+    platform: state
+    id: "1"
+    entity_id: sensor.sonarr_downloading
+    to: "0"
+conditions:
+  - condition: state
+    entity_id: sensor.sonarr_queue
+    state: "0"
+actions:
+  - action: notify.mobile_app_phone
+    mode: single
+    data:
+      title: "Downloads complete"
+      message: "All downloads finished."
