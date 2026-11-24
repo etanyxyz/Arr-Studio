@@ -43,7 +43,7 @@ class ArrEntity(CoordinatorEntity[ArrCoordinator]):
     @property
     def available(self) -> bool:
         """Available while the coordinator's last update succeeded."""
-        return not self.coordinator.last_update_failure
+        return self.coordinator.last_update_success
 
     def _snapshot(self) -> ServerSnapshot | None:
         """Current snapshot (None before the first successful refresh)."""

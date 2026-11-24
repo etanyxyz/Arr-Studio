@@ -58,3 +58,21 @@ def test_device_info_before_first_refresh() -> None:
     info = _entity(None).device_info
     assert info["sw_version"] is None
     assert info["model"] == "Sonarr"
+
+
+def test_available_follows_coordinator_success() -> None:
+    """available must track the coordinator's last_update_success flag
+    (regression for the removed last_update_failure attribute on HA 2026.x)."""
+    entity = _entity(_snapshot())
+    entity.coordinator.last_update_success = True
+    assert entity.available is True
+    entity.coordinator.last_update_success = False
+    assert entity.available is False
+
+
+def test_init_sets_coordinator_context() -> None:
+    """ArrEntity must call CoordinatorEntity.__init__ so HA 2026.x sets
+    coordinator_context (regression: entity add raised AttributeError:
+    'ArrSensor' object has no attribute 'coordinator_context')."""
+    entity = _entity(_snapshot())
+    assert entity.coordinator_context is None

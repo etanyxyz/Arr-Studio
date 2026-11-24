@@ -123,7 +123,7 @@ def build_overview(runtimes: list[ArrRuntimeData], recent_limit: int) -> dict:
         activity.extend(server_activity)
 
         failure = (
-            getattr(coordinator, "last_update_failure", None)
+            coordinator.last_exception
             if coordinator is not None
             else None
         )
