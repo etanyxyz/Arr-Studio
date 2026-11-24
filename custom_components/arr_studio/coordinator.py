@@ -92,6 +92,11 @@ class ArrCoordinator(DataUpdateCoordinator[ServerSnapshot]):
         """Normalized base URL of the server."""
         return self._client.base_url
 
+    @property
+    def show_unmonitored(self) -> bool:
+        """Whether unmonitored items count as missing."""
+        return self._show_unmonitored
+
     def cover(self, media_id: int, variant: str) -> Any:
         """Delegate a cover fetch to the client (awaited by the HTTP view)."""
         return self._client.async_get_cover(media_id, variant)
