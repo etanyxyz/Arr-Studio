@@ -34,7 +34,7 @@ PANEL_ELEMENT = "arr-studio-panel"
 PANEL_TITLE = "Arr Studio"
 PANEL_ICON = "mdi:filmstrip-box-multiple"
 FRONTEND_STATIC_URL = "/arr_studio"
-FRONTEND_ENTRY = "arr-studio-panel.js"
+FRONTEND_ENTRY = "panel.js"
 DATA_FRONTEND_REGISTERED = f"{DOMAIN}_frontend_registered"
 DATA_VIEWS_REGISTERED = f"{DOMAIN}_views_registered"
 
