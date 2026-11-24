@@ -1,5 +1,8 @@
 """Tests for the Arr Studio payload building."""
 
+from __future__ import annotations
+
+from types import SimpleNamespace
 
 from custom_components.arr_studio.payload import build_overview
 
@@ -66,3 +69,61 @@ def test_build_overview_no_api_key():
     assert "api_key" not in str(result)
     assert "apiKey" not in str(result)
     assert "apikey" not in str(result)
+
+
+def _full_snapshot():
+    """Snapshot with every field the payload reads for a coordinator-backed server."""
+    return SimpleNamespace(
+        name="Sonarr",
+        version="99.9.9",
+        online=True,
+        error=None,
+        disk=None,
+        speed_bps=0,
+        recent=(),
+        queue=(),
+        activity=(),
+        counts={"queue": 0, "downloading": 0, "recent": 0, "library": 0, "missing": 0, "upcoming": 0, "health": 0},
+    )
+
+
+def _runtime(last_update_success: bool, last_exception: Exception | None) -> SimpleNamespace:
+    """ArrRuntimeData-shaped fake: client plus coordinator state."""
+    client = SimpleNamespace(kind="sonarr", base_url="http://offline.local")
+    coordinator = SimpleNamespace(
+        config_entry=SimpleNamespace(entry_id="sonarr-1"),
+        data=_full_snapshot(),
+        last_update_success=last_update_success,
+        last_exception=last_exception,
+    )
+    return SimpleNamespace(client=client, coordinator=coordinator)
+
+
+def test_offline_server_shows_error():
+    """Plan §14: failing server -> online=false, per-server error and a
+    populated errors list for the panel banner."""
+    failure = Exception("Cannot connect: Connection refused")
+    result = build_overview([_runtime(False, failure)], 12)
+    server = result["servers"][0]
+    assert server["online"] is False
+    assert server["error"] == "Cannot connect: Connection refused"
+    assert result["errors"] == [
+        {
+            "entry_id": "sonarr-1",
+            "kind": "sonarr",
+            "name": "Sonarr",
+            "message": "Cannot connect: Connection refused",
+        }
+    ]
+
+
+def test_recovered_server_no_stale_error():
+    """HA never clears last_exception on a successful refresh; the payload
+    must not report stale errors once the server recovers."""
+    result = build_overview(
+        [_runtime(True, Exception("Cannot connect: Connection refused"))], 12
+    )
+    server = result["servers"][0]
+    assert server["online"] is True
+    assert server["error"] is None
+    assert result["errors"] == []

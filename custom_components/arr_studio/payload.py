@@ -82,6 +82,12 @@ def build_overview(runtimes: list[ArrRuntimeData], recent_limit: int) -> dict:
         config_entry = getattr(coordinator, "config_entry", None) if coordinator is not None else None
         entry_id = getattr(config_entry, "entry_id", None) or f"{kind}-{index}"
         snapshot = getattr(coordinator, "data", None) if coordinator is not None else None
+        failure = (
+            coordinator.last_exception
+            if coordinator is not None
+            else None
+        )
+        failing = coordinator is not None and not coordinator.last_update_success
 
         if snapshot is None:
             name = KIND_LABELS.get(kind, "Arr")
@@ -98,6 +104,9 @@ def build_overview(runtimes: list[ArrRuntimeData], recent_limit: int) -> dict:
             version = snapshot.version
             online = bool(snapshot.online)
             error = snapshot.error
+            if failing and failure is not None:
+                online = False
+                error = str(failure)
             disk = snapshot.disk
             speed_bps = int(snapshot.speed_bps or 0)
             server_recent = tuple(snapshot.recent)[:recent_limit]
@@ -122,12 +131,9 @@ def build_overview(runtimes: list[ArrRuntimeData], recent_limit: int) -> dict:
         queue.extend(server_queue)
         activity.extend(server_activity)
 
-        failure = (
-            coordinator.last_exception
-            if coordinator is not None
-            else None
-        )
-        if failure is not None:
+        # HA never clears last_exception on a successful refresh, so only
+        # report an error while the entry is actually failing.
+        if failing and failure is not None:
             errors.append(
                 {"entry_id": entry_id, "kind": kind, "name": name, "message": str(failure)}
             )

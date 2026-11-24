@@ -26,12 +26,18 @@ class ArrOnlineBinarySensor(ArrEntity, BinarySensorEntity):
         self._attr_name = "Online"
 
     @property
-    def is_on(self) -> bool | None:
+    def available(self) -> bool:
+        """Available once the first refresh has succeeded.
+
+        A connectivity sensor keeps reporting (off) while the server is
+        unreachable instead of going unavailable (plan §14).
+        """
+        return self._snapshot() is not None
+
+    @property
+    def is_on(self) -> bool:
         """True while the last refresh succeeded."""
-        snapshot = self._snapshot()
-        if snapshot is None:
-            return None
-        return snapshot.online
+        return self.coordinator.last_update_success
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
@@ -39,7 +45,10 @@ class ArrOnlineBinarySensor(ArrEntity, BinarySensorEntity):
         snapshot = self._snapshot()
         if snapshot is None:
             return {}
-        return {"last_update": snapshot.updated_at, "error": snapshot.error}
+        error = snapshot.error
+        if not self.coordinator.last_update_success and self.coordinator.last_exception:
+            error = str(self.coordinator.last_exception)
+        return {"last_update": snapshot.updated_at, "error": error}
 
 
 async def async_setup_entry(
