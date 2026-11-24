@@ -28,6 +28,17 @@ class ArrLatestPosterImage(ArrEntity, ImageEntity):
         super().__init__(coordinator, "latest_poster")
         self._attr_name = "Latest poster"
 
+    async def async_added_to_hass(self) -> None:
+        """Initialize the image part now that the platform has set hass.
+
+        The CoordinatorEntity MRO chain stops before ImageEntity.__init__,
+        so access_tokens (read by the image view and state attributes) is
+        initialized here instead.
+        """
+        if not hasattr(self, "access_tokens"):
+            ImageEntity.__init__(self, self.hass)
+        await super().async_added_to_hass()
+
     def _latest_item(self) -> Any | None:
         """Newest recent item, or None before the first refresh."""
         snapshot = self._snapshot()
@@ -51,7 +62,7 @@ class ArrLatestPosterImage(ArrEntity, ImageEntity):
             return None
         return data, "image/svg+xml"
 
-    async def async_image(self) -> tuple[bytes, str] | None:
+    async def async_image(self) -> bytes | None:
         """Latest poster bytes; never raises (falls back to the placeholder)."""
         item = self._latest_item()
         if item is not None:
@@ -60,8 +71,13 @@ class ArrLatestPosterImage(ArrEntity, ImageEntity):
             except ArrError:
                 result = None
             if result is not None:
-                return result
-        return await self._async_placeholder()
+                self._attr_content_type = result[1]
+                return result[0]
+        placeholder = await self._async_placeholder()
+        if placeholder is None:
+            return None
+        self._attr_content_type = placeholder[1]
+        return placeholder[0]
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
