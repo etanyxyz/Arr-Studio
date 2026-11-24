@@ -27,7 +27,7 @@ class ArrEntity(CoordinatorEntity[ArrCoordinator]):
     def device_info(self) -> DeviceInfo:
         """Device registry info: one service device per configured server."""
         entry = self.coordinator.config_entry
-        snapshot = self._snapshot
+        snapshot = self._snapshot()
         version = snapshot.version if snapshot is not None else None
         label = KIND_LABELS.get(entry.data.get(CONF_KIND), "Arr")
         return {

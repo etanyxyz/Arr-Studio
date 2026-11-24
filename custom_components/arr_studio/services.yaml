@@ -1,0 +1,9 @@
+refresh:
+  name: "Refresh"
+  description: >
+    Force-refresh Arr Studio data for one configured server, or for all
+    servers when entry_id is omitted.
+  fields:
+    entry_id:
+      required: false
+      example: "01M86WSY497MN47RXAMXW0VMPB"
