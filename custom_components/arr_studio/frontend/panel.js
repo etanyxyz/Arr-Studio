@@ -328,13 +328,15 @@ class ArrStudioPanel extends HTMLElement {
     this._drawer.hidden = false;
 
     if (this._hass) {
-      const variants = item.poster
-        ? ["poster", "fanart"]
+      const posterPath = item.poster || coverPath(item, "poster");
+      const fanartPath = item.fanart || coverPath(item, "fanart");
+      const paths = item.poster
+        ? [posterPath, fanartPath]
         : item.fanart
-          ? ["fanart", "poster"]
+          ? [fanartPath, posterPath]
           : [];
-      for (const variant of variants) {
-        const url = await getCoverObjectUrl(this._hass, coverPath(item, variant));
+      for (const path of paths) {
+        const url = await getCoverObjectUrl(this._hass, path);
         if (url) {
           img.src = url;
           break;

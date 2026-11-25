@@ -4,7 +4,7 @@
 
 import { el, emptyState } from "./dom.js";
 import { fmtRelative } from "./format.js";
-import { coverPath, lazyCover } from "./api.js";
+import { lazyCover } from "./api.js";
 
 export function renderRecent(items, loader, onOpen) {
   if (!items.length) {
@@ -18,7 +18,7 @@ export function renderRecent(items, loader, onOpen) {
     const wrap = el("div", { className: "poster-wrap" });
     const img = el("img", { className: "poster-img", alt: item.title || "" });
     if (item.poster) {
-      lazyCover(img, coverPath(item, "poster"), loader);
+      lazyCover(img, item.poster, loader);
     } else {
       wrap.classList.add("no-cover");
       wrap.appendChild(document.createTextNode("no cover"));

@@ -194,6 +194,8 @@ class TestNormalizeQueue:
         assert result.subtitle == "S02E04 · Woe's Hollow"
         assert result.status == "downloading"
         assert result.protocol == "torrent"
+        # Cover path keys off the series id, not the queue id (plan §8.14).
+        assert result.poster == "/api/arr_studio/cover/entry1/sonarr/34/poster"
 
     def test_radarr_queue_entry(self):
         raw = {
@@ -210,8 +212,22 @@ class TestNormalizeQueue:
         }
         result = normalize_queue("entry1", "radarr", raw, "http://test.local")
         assert result.kind == "radarr"
+        assert result.id == 101
         assert result.title == "The Last Frontier"
         assert result.subtitle == "2024"
+        # Cover path keys off the movie id, not the queue id (plan §8.14).
+        assert result.poster == "/api/arr_studio/cover/entry1/radarr/1/poster"
+
+    def test_queue_cover_falls_back_to_series_id_field(self):
+        raw = {
+            "id": 500,
+            "seriesId": 7,
+            "title": "Show.S01E01.1080p.WEB-DL",
+            "status": "downloading",
+        }
+        result = normalize_queue("entry1", "sonarr", raw, "http://test.local")
+        assert result.id == 500
+        assert result.poster == "/api/arr_studio/cover/entry1/sonarr/7/poster"
 
 
 class TestNormalizeHistory:

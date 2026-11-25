@@ -225,13 +225,16 @@ def normalize_queue(entry_id: str, kind: str, raw: dict, base_url: str) -> Queue
         else:
             subtitle = title
 
-    media_id = raw.get("id")
+    queue_id = raw.get("id")
+    # Cover paths key off the media (series/movie) id, not the queue id
+    # (plan §8.14: queue id 1201 -> poster "…/sonarr/34/poster").
+    media_id = nested.get("id") or raw.get("seriesId") or raw.get("movieId") or queue_id
     size = raw.get("size", 0) or 0
     size_left = raw.get("sizeleft", 0) or 0
     return QueueItem(
         entry_id=entry_id,
         kind=kind,
-        id=media_id,
+        id=queue_id,
         title=_text(title),
         subtitle=_text(subtitle),
         # Queue items may carry no inline images; the cover view resolves the

@@ -4,7 +4,7 @@
 
 import { el, emptyState } from "./dom.js";
 import { fmtBytes, fmtEta, fmtSpeed, pct } from "./format.js";
-import { coverPath, lazyCover } from "./api.js";
+import { lazyCover } from "./api.js";
 
 export function renderQueue(items, loader, onOpen) {
   if (!items.length) {
@@ -16,7 +16,7 @@ export function renderQueue(items, loader, onOpen) {
     const row = el("div", { className: "queue-row" });
     const img = el("img", { className: "queue-img", alt: item.title || "" });
     if (item.poster) {
-      lazyCover(img, coverPath(item, "poster"), loader);
+      lazyCover(img, item.poster, loader);
     }
     const body = el("div", { className: "queue-body" });
     const head = el("div", { className: "queue-head" });
