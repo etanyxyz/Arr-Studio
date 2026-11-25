@@ -117,7 +117,6 @@ REQUIRED_PHASE_FILES: dict[int, tuple[str, ...]] = {
         "docs/images/panel-overview.png",
         "docs/images/panel-downloads.png",
         "docs/images/panel-detail.png",
-        "docs/images/entities.png",
     ),
 }
 

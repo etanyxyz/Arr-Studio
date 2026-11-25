@@ -25,10 +25,6 @@ sidebar panel and native entities you can automate on.
 | --- | --- |
 | <img src="docs/images/panel-detail.png" width="720" alt="Arr Studio panel, detail drawer"> | <img src="docs/images/mobile-overview.png" width="195" alt="Arr Studio panel on mobile"> |
 
-Native entities for a configured server:
-
-![Entities](docs/images/entities.png)
-
 ## Installation
 
 ### Home Assistant 2026.11 or newer (built-in Marketplace)
