@@ -1,6 +1,6 @@
 DOMAIN = "arr_studio"
 NAME = "Arr Studio"
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 
 KIND_SONARR = "sonarr"
 KIND_RADARR = "radarr"
