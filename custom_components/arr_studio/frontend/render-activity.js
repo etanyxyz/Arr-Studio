@@ -2,9 +2,9 @@
  * Arr Studio frontend - activity feed rows.
  */
 
-import { el, emptyState } from "./dom.js";
-import { fmtRelative, titleCase } from "./format.js";
-import { kindIcon } from "./icons.js";
+import { el, emptyState } from "./dom.js?v=0.1.4";
+import { fmtRelative, titleCase } from "./format.js?v=0.1.4";
+import { kindIcon } from "./icons.js?v=0.1.4";
 
 export function renderActivity(items, onOpen) {
   if (!items.length) {

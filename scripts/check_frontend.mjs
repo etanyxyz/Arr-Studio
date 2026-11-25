@@ -99,9 +99,48 @@ for (const file of jsFiles) {
   for (const re of [importRe, dynamicRe]) {
     let match;
     while ((match = re.exec(source)) !== null) {
-      const target = resolve(dirname(file), match[1]);
+      // Import specifiers may carry a ?v=<version> cache-buster; resolve
+      // the bare path.
+      const target = resolve(dirname(file), match[1].split("?")[0]);
       if (!existsSync(target)) {
         fails.push(`${relative}: import target missing -> ${match[1]}`);
+      }
+    }
+  }
+}
+
+function readJsonSafe(path) {
+  try {
+    return JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+// Sub-module imports must carry the integration version as a cache-buster:
+// HA serves the static path with a 31-day Cache-Control, so an unversioned
+// import keeps running stale code after an update (v0.1.2 -> v0.1.3 bug).
+const versionRe = /\?v=(\d+\.\d+\.\d+)/g;
+const importVersions = new Set();
+for (const file of jsFiles) {
+  const source = readFileSync(file, "utf8");
+  let match;
+  while ((match = versionRe.exec(source)) !== null) {
+    importVersions.add(match[1]);
+  }
+}
+if (importVersions.size === 0) {
+  fails.push("sub-module imports are not versioned (?v= cache-buster missing)");
+} else {
+  const manifest = readJsonSafe(
+    join(root, "custom_components", "arr_studio", "manifest.json"),
+  );
+  if (manifest && manifest.version) {
+    for (const version of importVersions) {
+      if (version !== manifest.version) {
+        fails.push(
+          `versioned import ?v=${version} != manifest version ${manifest.version}`,
+        );
       }
     }
   }

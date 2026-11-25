@@ -2,8 +2,8 @@
  * Arr Studio frontend - hero section: heading, server chips, stat pills.
  */
 
-import { el } from "./dom.js";
-import { fmtSpeed } from "./format.js";
+import { el } from "./dom.js?v=0.1.4";
+import { fmtSpeed } from "./format.js?v=0.1.4";
 
 export function renderHero(data) {
   const hero = el("section", { className: "hero" });

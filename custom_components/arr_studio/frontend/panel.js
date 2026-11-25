@@ -6,20 +6,24 @@
  * endpoint; covers load lazily through the authenticated cover endpoint.
  */
 
-import { el, clear } from "./dom.js";
-import { BASE_CSS } from "./styles.js";
-import { svgIcon } from "./icons.js";
+// Sub-module imports carry the integration version as a cache-buster: HA
+// serves the static path with a 31-day Cache-Control, so an unversioned
+// import would keep running stale code after an update.
+import { el, clear } from "./dom.js?v=0.1.4";
+import { BASE_CSS } from "./styles.js?v=0.1.4";
+import { svgIcon } from "./icons.js?v=0.1.4";
 import {
   coverPath,
   fetchOverview,
   getCoverObjectUrl,
   releaseCovers,
-} from "./api.js";
-import { loadState, saveState } from "./state.js";
-import { renderHero } from "./render-hero.js";
-import { renderRecent } from "./render-recent.js";
-import { renderQueue } from "./render-queue.js";
-import { renderActivity } from "./render-activity.js";
+} from "./api.js?v=0.1.4";
+import { loadState, saveState } from "./state.js?v=0.1.4";
+import { renderHero } from "./render-hero.js?v=0.1.4";
+import { renderRecent } from "./render-recent.js?v=0.1.4";
+import { renderQueue } from "./render-queue.js?v=0.1.4";
+import { renderActivity } from "./render-activity.js?v=0.1.4";
+import { queuePhase } from "./status.js?v=0.1.4";
 
 const POLL_MS = 30000;
 const TABS = [
@@ -305,6 +309,14 @@ class ArrStudioPanel extends HTMLElement {
       meta.appendChild(el("p", {}, parts.join(" · ")));
     }
     body.appendChild(meta);
+
+    if (item.status || item.state) {
+      const info = queuePhase(item);
+      body.appendChild(el("div", { className: "drawer-status st-" + info.phase }, info.label));
+      if (item.error) {
+        body.appendChild(el("p", { className: "drawer-error" }, item.error));
+      }
+    }
 
     const tags = el("div", { className: "drawer-tags" });
     for (const tag of item.meta || []) {

@@ -7,6 +7,7 @@
 - **Text**: #ffffff (white text)
 - **Muted text**: #999999 (gray text)
 - **Accent**: #4caf50 (green)
+- **Warning**: #ff9800 (amber)
 - **Error**: #f44336 (red)
 - **Background**: #1a1a1a (dark gray)
 - **Border**: #333333 (dark gray)
@@ -32,6 +33,14 @@
 - Gap: 18px
 - Skeleton loading state
 - Error state with retry
+
+### Queue Rows
+- Poster thumbnail (left), title and phase badge (right)
+- Phase badge: download (muted), waiting for import (warning), importing
+  (primary), import blocked / failed (error), imported (accent)
+- Progress bar, footer with size left, speed, ETA
+- Summary chips above the rows when items wait for or block import
+- Error note on blocked or failed rows when the server reports one
 
 ### Detail Drawer
 - Close button (top-right)

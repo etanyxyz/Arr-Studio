@@ -171,12 +171,34 @@ export const BASE_CSS = `
 .queue-row:hover { border-color: #4285f4; }
 .queue-img { width: 48px; height: 64px; object-fit: cover; border-radius: 4px; background: #333333; }
 .queue-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.queue-summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.queue-chip {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #333333;
+  font-size: 12px;
+  color: #999999;
+}
+.qc-wait { color: #ff9800; }
+.qc-import { color: #4285f4; }
+.qc-blocked, .qc-failed { color: #f44336; }
+.qc-done { color: #4caf50; }
 .queue-head { display: flex; gap: 8px; align-items: baseline; }
 .queue-title { font-weight: 600; }
-.queue-status { margin-left: auto; font-size: 12px; color: #999999; text-transform: capitalize; }
+.queue-status { margin-left: auto; font-size: 12px; color: #999999; }
+.st-wait { color: #ff9800; }
+.st-import { color: #4285f4; }
+.st-blocked, .st-failed { color: #f44336; }
+.st-done { color: #4caf50; }
 .progress { height: 4px; border-radius: 2px; background: #333333; overflow: hidden; }
 .progress-fill { height: 100%; background: #4285f4; }
 .queue-foot { display: flex; gap: 12px; font-size: 12px; color: #999999; }
+.queue-note {
+  color: #f44336;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .activity-row {
   display: flex;
@@ -247,6 +269,8 @@ export const BASE_CSS = `
 .drawer-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .drawer-title { font-size: 18px; margin: 0 0 8px; }
 .drawer-meta p { color: #999999; margin: 0 0 8px; }
+.drawer-status { font-weight: 600; font-size: 13px; margin: 0 0 8px; }
+.drawer-error { color: #f44336; font-size: 12px; margin: 0 0 8px; }
 .drawer-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
 .tag {
   background: #333333;

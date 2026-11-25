@@ -2,9 +2,9 @@
  * Arr Studio frontend - recent additions poster grid.
  */
 
-import { el, emptyState } from "./dom.js";
-import { fmtRelative } from "./format.js";
-import { lazyCover } from "./api.js";
+import { el, emptyState } from "./dom.js?v=0.1.4";
+import { fmtRelative } from "./format.js?v=0.1.4";
+import { lazyCover } from "./api.js?v=0.1.4";
 
 export function renderRecent(items, loader, onOpen) {
   if (!items.length) {
