@@ -465,8 +465,8 @@ GitHub Actions: Validate (lint+pytest+node), hassfest, HACS Action — all green
 
 ### Phase 7 — Screenshots & acceptance (commit `docs: screenshots`)
 
-Capture `docs/images/panel-overview.png`, `panel-downloads.png`, `panel-detail.png`,
-`entities.png` at 1440×900 and one mobile 390×844. Run the full acceptance list in §14.
+Capture `docs/images/panel-overview.png`, `panel-downloads.png`, `panel-detail.png`
+at 1440×900 and one mobile 390×844. Run the full acceptance list in §14.
 Optional: short GIF/MP4 of the panel (`docs/images/demo.gif`, < 8 MB).
 
 ---
