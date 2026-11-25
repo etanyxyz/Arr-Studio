@@ -44,6 +44,8 @@ class ArrStudioPanel extends HTMLElement {
     this._timer = null;
     this._built = false;
     this._hass = null;
+    this._tabBtns = [];
+    this._kindBtns = [];
   }
 
   connectedCallback() {
@@ -129,6 +131,7 @@ class ArrStudioPanel extends HTMLElement {
         this._render();
       });
       tabs.appendChild(btn);
+      this._tabBtns.push(btn);
     }
     sidebar.appendChild(tabs);
 
@@ -145,6 +148,7 @@ class ArrStudioPanel extends HTMLElement {
         this._render();
       });
       filters.appendChild(btn);
+      this._kindBtns.push(btn);
     }
     sidebar.appendChild(filters);
     main.appendChild(sidebar);
@@ -163,6 +167,15 @@ class ArrStudioPanel extends HTMLElement {
     root.appendChild(this._drawer);
 
     shadow.appendChild(root);
+  }
+
+  _syncSidebar() {
+    for (const btn of this._tabBtns) {
+      btn.classList.toggle("active", btn.dataset.tab === this._state.tab);
+    }
+    for (const btn of this._kindBtns) {
+      btn.classList.toggle("active", btn.dataset.kind === this._state.kind);
+    }
   }
 
   _startPolling() {
@@ -225,6 +238,7 @@ class ArrStudioPanel extends HTMLElement {
     if (!this._built) {
       return;
     }
+    this._syncSidebar();
     const content = this._content;
     clear(content);
 
